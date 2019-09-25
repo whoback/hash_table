@@ -90,7 +90,7 @@ void ht_insert(ht_hash_table *ht, const char *key, const char *value)
     ht_item *cur_item = ht->items[index];
     int i = 1;
     //itr through until we find an empty bucket and insert
-    while(cur_item != NULL)
+    while(cur_item != NULL && cur_item != &HT_DELETED_ITEM)
     {
         index = ht_get_hash(item->key, ht->size, i);
         cur_item = ht->items[index];
@@ -99,4 +99,47 @@ void ht_insert(ht_hash_table *ht, const char *key, const char *value)
     //insert our new item
     ht->items[index] = item;
     ht->count++;
+}
+//used for representing deleted table items
+static ht_item HT_DELETED_ITEM = {NULL, NULL};
+
+void ht_delete(ht_hash_table *ht, const char *key)
+{
+    int index = ht_get_hash(key, ht->size, 0);
+    ht_item *item = ht->items[index];
+    int i = 1;
+    while(item != NULL)
+    {
+        if(item != &HT_DELETED_ITEM)
+        {
+            if(strcmp(item->key, key) == 0)
+            {
+                ht_del_item(item);
+                ht->items[index] = &HT_DELETED_ITEM;
+            }
+        }
+        index = ht_get_hash(key, ht->size, i);
+        item = ht->items[index];
+        ++i;
+    }
+    ht->count--;
+}
+
+//search if keys match return value otherwise NULL
+char *ht_search(ht_hash_table *ht, const char *key)
+{
+    int index = ht_get_hash(key, ht->size, 0);
+    ht_item *item = ht->items[index];
+    int i = 1;
+    while(item != NULL)
+    {
+        if(strcmp(item->key, key) == 0)
+        {
+            return item->value;
+        }
+        index = ht_get_hash(key, ht->size, i);
+        item = ht->items[index];
+        ++i;
+    }
+    return NULL;
 }
