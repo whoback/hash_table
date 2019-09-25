@@ -74,10 +74,11 @@ int char_code(char c)
 {
     return (int)c;
 }
-
+//handle collisions using double hashing
 static int ht_get_hash(const char *str, const int num_buckets, const int attempt)
 {
     const int hash_a = hash(str, HT_PRIME_1, num_buckets);
     const int hash_b = hash(str, HT_PRIME_2, num_buckets);
+    //add 1 to hash_b to make sure its not 0
     return (hash_a + (attempt * (hash_b + 1))) % num_buckets;
 }
