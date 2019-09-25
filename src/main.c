@@ -5,8 +5,10 @@
 
 int main()
 {
-    ht_hash_table *ht = ht_new();
+    ht_hash_table *ht;
+    ht = ht_new();
     assert(ht->size == 53);
     ht_del_hash_table(ht);
     printf("success ht created and destroyed\n");
+    return 0;
 }
