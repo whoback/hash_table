@@ -1,7 +1,11 @@
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "hash_table.h"
+//have to be bigger than the alphabet
+#define HT_PRIME_1 29
+#define HT_PRIME_2 59
 
 // init function for ht_item. allocates memory for key/value pair and stores
 // it in the struct
@@ -51,4 +55,29 @@ void ht_del_hash_table(ht_hash_table *ht)
     }
     free(ht->items);
     free(ht);
+}
+
+//hashing functions
+int hash(const char *str, const int prime, const int num_buckets)
+{
+    long hash = 0;
+    const int str_len = strnlen(str, sizeof(str));
+    for(int i = 0; i < str_len; ++i)
+    {
+        hash += (long)pow(prime, str_len - (i + 1)) * str[i];
+        hash = hash % num_buckets;
+    }
+    return (int)hash;
+}
+//taking a char and returning its ASCII representation
+int char_code(char c)
+{
+    return (int)c;
+}
+
+static int ht_get_hash(const char *str, const int num_buckets, const int attempt)
+{
+    const int hash_a = hash(str, HT_PRIME_1, num_buckets);
+    const int hash_b = hash(str, HT_PRIME_2, num_buckets);
+    return (hash_a + (attempt * (hash_b + 1))) % num_buckets;
 }
