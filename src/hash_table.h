@@ -12,5 +12,5 @@ typedef struct{
 typedef struct{
         int size;
         int count;
-        ht_items **items;
+        ht_item **items;
 } ht_hash_table;
