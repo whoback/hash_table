@@ -116,13 +116,15 @@ void ht_delete(ht_hash_table *ht, const char *key)
             {
                 ht_del_item(item);
                 ht->items[index] = &HT_DELETED_ITEM;
+                ht->count--;
+                return;
             }
         }
         index = ht_get_hash(key, ht->size, i);
         item = ht->items[index];
         ++i;
     }
-    ht->count--;
+    
 }
 
 //search if keys match return value otherwise NULL
@@ -133,13 +135,18 @@ char *ht_search(ht_hash_table *ht, const char *key)
     int i = 1;
     while(item != NULL)
     {
-        if(strcmp(item->key, key) == 0)
+        if(item != &HT_DELETED_ITEM)
         {
-            return item->value;
+
+            
+            if(strcmp(item->key, key) == 0)
+            {
+                return item->value;
+            }
+            index = ht_get_hash(key, ht->size, i);
+            item = ht->items[index];
+            ++i;
         }
-        index = ht_get_hash(key, ht->size, i);
-        item = ht->items[index];
-        ++i;
     }
     return NULL;
 }
